@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanergy.reportForms.mapper.ProcessRecodeMapper">
+
+
+    <select id="processRecodeList" parameterType="com.hanergy.reportForms.mapper.entity.ProcessRecode" resultType="map">
+        select l.id id,DATE_FORMAT(l.pro_time,'%Y-%m-%d %H:%d:%s')proTime,l.pro_ip_addr loginIpAddr,l.pro_target proTarg,
+        u.username userName,u. NAME fullName,
+        (CASE l.pro_type
+        WHEN 1 THEN
+        "新增"
+        WHEN 2 THEN
+        "修改"
+        WHEN 3 THEN
+        "删除"
+        WHEN 4 THEN
+        "查看"
+        WHEN 5 THEN
+        "登陆"
+        WHEN 6 THEN
+        "导出"
+        END)proType
+        FROM sys_process_log l
+        INNER JOIN sys_user u ON l.userid = u.user_id
+        <if test="start_date!=null">
+            <![CDATA[AND DATE_FORMAT(l.pro_time,'%YYYY-%mm-%dd')>=DATE_FORMAT(#{start_date,jdbcType=DATE},'%YYYY-%mm-%dd')]]>
+        </if>
+        <if test="end_date!=null">
+            <![CDATA[AND DATE_FORMAT(l.pro_time,'%YYYY-%mm-%dd')<=DATE_FORMAT(#{end_date,jdbcType=DATE},'%YYYY-%mm-%dd')]]>
+        </if>
+        ORDER BY l.pro_time DESC
+        <if test="pageNo!=null and pageSize!=null">
+            limit ${(pageNo-1)*pageSize},#{pageSize}
+        </if>
+    </select>
+    <select id="countRecode" parameterType="com.hanergy.reportForms.mapper.entity.ProcessRecode" resultType="java.lang.Integer">
+        SELECT COUNT(*)  FROM sys_process_log l
+        INNER JOIN sys_user u ON l.userid = u.user_id
+        <if test="start_date!=null">
+            <![CDATA[AND DATE_FORMAT(l.pro_time,'%YYYY-%mm-%dd')>=DATE_FORMAT(#{start_date,jdbcType=DATE},'%YYYY-%mm-%dd')]]>
+        </if>
+        <if test="end_date!=null">
+            <![CDATA[AND DATE_FORMAT(l.pro_time,'%YYYY-%mm-%dd')<=DATE_FORMAT(#{end_date,jdbcType=DATE},'%YYYY-%mm-%dd')]]>
+        </if>
+    </select>
+</mapper>

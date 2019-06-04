@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanergy.reportForms.mapper.product.ProductMapper">
+    <select id="findProductByParam" parameterType="String" resultType="com.hanergy.reportForms.mapper.entity.Product">
+         SELECT
+            p.pro_id proid,
+            DATE_FORMAT(p.target_date, "%Y-%m-%d") targetDate,
+            p.pro_name proName
+            FROM
+            product_info p
+            WHERE 1=1
+            <if test="proName!=null">
+                AND p.pro_name=#{proName}
+            </if>
+            <if test="proid!=null">
+                AND p.pro_id=#{proid}
+            </if>
+    </select>
+    <select id="findMonDataByParam" parameterType="com.hanergy.reportForms.mapper.entity.Product" resultType="com.hanergy.reportForms.mapper.entity.Product">
+            SELECT
+            m.month_data_id monDataId,
+            m.month_data monData,
+            m.month_data_type monDataType,
+            m.month month,
+            m.pro_id proid
+            FROM pro_moth_data m
+            WHERE 1=1
+            <if test="monDataId!=null">
+                AND m.month_data_id=#{monDataId}
+            </if>
+           <if test="monDataType!=null">
+               AND m.month_data_type=#{monDataType}
+           </if>
+           <if test="month!=null">
+               AND DATE_FORMAT(m.month,"%M")=DATE_FORMAT(#{month},"%M")
+           </if>
+           <if test="proid!=null">
+               AND m.pro_id=#{proid}
+           </if>
+    </select>
+    <select id="findWekDataById" parameterType="long" resultType="com.hanergy.reportForms.mapper.entity.Product">
+          SELECT w.wek_data_id wekDataId,w.wek_data wekData,w.week week,w.wek_data_type wekDataType FROM pro_week_data w WHERE w.wek_data_id=#{wekDataId}
+    </select>
+    <select id="findWekDataByParam" parameterType="com.hanergy.reportForms.mapper.entity.Product" resultType="com.hanergy.reportForms.mapper.entity.Product">
+        SELECT w.wek_data_id wekDataId,w.wek_data wekData,w.month_data_id monDataId,w.week week,w.wek_data_type wekDataType FROM pro_week_data w
+        WHERE 1=1
+        <if test="week!=null">
+            AND w.week=#{week}
+        </if>
+        <if test="wekDataType!=null">
+            AND w.wek_data_type=#{wekDataType}
+        </if>
+        <if test="monDataId!=null">
+            AND w.month_data_id=#{monDataId}
+        </if>
+    </select>
+    <select id="findUserByParam" parameterType="com.hanergy.reportForms.mapper.entity.Product" resultType="long">
+        SELECT p.user_id userId FROM pro_user p WHERE 1=1
+        <if test="proid!=null">
+            AND p.pro_id=#{proid}
+        </if>
+        <if test="userId!=null">
+            AND p.user_id=#{userId}
+        </if>
+    </select>
+    <select id="productList" parameterType="com.hanergy.reportForms.mapper.entity.Product" resultType="map">
+       SELECT
+            p.pro_id proid,
+            p.pro_name proName,
+            DATE_FORMAT(p.target_date, "%Y-%m-%d") targetDate,
+            m.month_data_id monDataId,
+            m.month_data monData,
+            m.month_data_type monDataType,
+                substr(
+                    DATE_FORMAT(m. MONTH, "%M"),
+                    1,
+                    3
+                )month,
+            GROUP_CONCAT(
+                CONCAT_WS(
+                    ",",
+                    w.wek_data_id,
+                    w.wek_data,
+                    w. WEEK,
+                    w.wek_data_type
+                )
+                ORDER BY
+                    w. WEEK ASC SEPARATOR ";"
+            ) wekData
+        FROM
+            product_info p
+        LEFT JOIN pro_user u ON p.pro_id = u.pro_id
+        LEFT JOIN pro_moth_data m ON p.pro_id = m.pro_id
+        LEFT JOIN pro_week_data w ON m.month_data_id = w.month_data_id
+        WHERE
+            u.user_id = #{userId}
+        AND p.isdel = 0
+        GROUP BY
+            p.pro_name,
+            m.month_data_id
+            ORDER BY p.pro_id,m. MONTH
+    </select>
+
+    <insert id="createProduct" useGeneratedKeys="true" keyColumn="pro_id" keyProperty="proid" parameterType="com.hanergy.reportForms.mapper.entity.Product">
+          INSERT INTO product_info
+          (
+            pro_name,
+            target_date,
+            isdel,
+            create_time
+          )
+        VALUES
+            (#{proName},#{targetDate},0,SYSDATE())
+    </insert>
+    <insert id="createMonData" useGeneratedKeys="true" keyColumn="month_data_id" keyProperty="monDataId" parameterType="com.hanergy.reportForms.mapper.entity.Product">
+          INSERT INTO pro_moth_data
+            (
+            month_data,
+            month,
+            pro_id,
+            month_data_type,
+            create_time
+            )
+        VALUES
+        (#{monData},#{month},#{proid},#{monDataType},SYSDATE())
+    </insert>
+    <insert id="createWekData" useGeneratedKeys="true" keyColumn="wek_data_id" keyProperty="wekDataId" parameterType="com.hanergy.reportForms.mapper.entity.Product">
+             INSERT INTO pro_week_data
+             (
+                wek_data,
+                WEEK,
+                month_data_id,
+                wek_data_type,
+                create_time
+            )
+            VALUES
+            (#{wekData},#{week},#{monDataId},#{wekDataType},SYSDATE())
+    </insert>
+
+    <insert id="createProAndUser" parameterType="com.hanergy.reportForms.mapper.entity.Product">
+        INSERT INTO pro_user(pro_id,user_id,create_time) VALUES (#{proid},#{userId},SYSDATE())
+    </insert>
+
+    <update id="updateProduct" parameterType="com.hanergy.reportForms.mapper.entity.Product">
+        UPDATE product_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="proName!=''">
+                pro_name =#{proName},
+            </if>
+            <if test="targetDate!=''">
+                target_date =#{targetDate},
+            </if>
+            update_time = SYSDATE()
+        </trim>
+        WHERE pro_id=#{proid}
+    </update>
+    <update id="updateMonData" parameterType="com.hanergy.reportForms.mapper.entity.Product">
+        UPDATE pro_moth_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="monData!=''">
+                month_data = #{monData},
+            </if>
+            <if test="month!=''">
+                month = #{month},
+            </if>
+           <if test="proid!=null">
+               pro_id = #{proid},
+           </if>
+            <if test="monDataType!=null">
+                month_data_type=#{monDataType},
+            </if>
+            update_time = SYSDATE()
+        </trim>
+        WHERE month_data_id=#{monDataId}
+    </update>
+    <update id="updateWekData" parameterType="com.hanergy.reportForms.mapper.entity.Product">
+        UPDATE pro_week_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="wekData!=''">
+                wek_data = #{wekData},
+            </if>
+            <if test="week!=''">
+                WEEK = #{week},
+            </if>
+            <if test="monDataId!=null">
+                month_data_id = #{monDataId},
+            </if>
+            <if test="wekDataType!=null">
+                wek_data_type = #{wekDataType},
+            </if>
+            update_time = SYSDATE()
+        </trim>
+        WHERE 1=1
+        <if test="wekDataId!=null">
+          AND wek_data_id=#{wekDataId}
+        </if>
+         <if test="week!='' and monDataId!=null  and wekDataType!=null">
+             AND WEEK = #{week} AND month_data_id = #{monDataId} AND wek_data_type = #{wekDataType}
+         </if>
+    </update>
+    <update id="delProduct" parameterType="java.util.List">
+        UPDATE  product_info SET isdel=1,update_time=SYSDATE()
+        WHERE pro_id IN
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

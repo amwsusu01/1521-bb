@@ -1,0 +1,94 @@
+spring:
+  mvc:
+    static-path-pattern:/resources/**
+  resources:
+    static-locations: classpath:/static
+  profiles:
+    active: prod
+    ## 可以在启动项目是添加参数: -spring.profiles.active=prod启动配置文件
+    ## 注意这里的dev,prod,test都是前缀,如果启动配置文件中有以prod开头的,例如 prodmq,proddb同样会被启动
+  #    include:
+  #      - prodmq
+  #      - proddb
+  application:
+    name: BACKGROUND-SYSTEM
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java,src/main/resources
+  mail:
+    ## SMTP server host smtp.example.com
+    host: mail.hanergy.com
+    ## SMTP server port
+    port: 587
+    ## 协议
+    protocol: smtp
+    ## login user of the SMTP server
+    username: bgs_admin
+    ## login password of the SMTP server
+    password: bemm!95a
+    ## default MimeMessage encoding
+    default-encoding: utf-8
+    test-connection: false
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.enable: true
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 300
+      mail.stmp.writetimeout: 5000
+      mail.smtp.domain: unipower.cn
+    jndi-name: sendMailSession
+  freemarker:
+    charset: UTF-8
+    allow-request-override: false
+    cache: true
+    check-template-location: true
+    content-type: text/html
+    expose-request-attributes: false
+    expose-session-attributes: false
+    expose-spring-macro-helpers: false
+    suffix: .ftl
+    request-context-attribute: request
+    enabled: true
+  redis:
+    jedis:
+      pool:
+        max-idle: 50
+        min-idle: 8
+        max-active: 200
+    timeout: 6000ms
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+server:
+  port: 8088
+  tomcat:
+    max-threads: 800
+    uri-encoding: utf-8
+
+## mybatis-插件
+mybatis:
+  mapper-locations: classpath*:/mybatis/*.xml
+  type-aliases-package: com.hanergy.reportForms.mapper
+  show-sql: true
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+  global-config:
+    db-config:
+      field-strategy: not_empty
+      column-underline: true
+      ## 自定义主键
+      id-type: input
+      ## 是否自动刷新 Mapper 对应的 XML 文件，默认不自动刷新。
+      ## 如果配置了该属性，Mapper 对应的 XML 文件会自动刷新，更改 XML 文件后，无需再次重启工程，由此节省大量时间。
+    refresh: true
+
+logging:
+  config: classpath:log4j2.yml
+  level:
+    com:
+      hanergy:
+         reportForms:
+               mapper: debug

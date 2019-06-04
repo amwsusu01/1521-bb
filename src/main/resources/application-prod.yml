@@ -1,0 +1,49 @@
+spring:
+  datasource:
+    ass:
+      driver-class-name: com.mysql.jdbc.Driver
+      type: com.alibaba.druid.pool.DruidDataSource
+      jdbcUrl: jdbc:mysql://192.168.19.233:3306/han_hr_h3c?useUnicode=true&characterEncoding=utf-8&serverTimezone=Hongkong
+      username: root
+      password: root
+    asm:
+       driver-class-name: com.mysql.jdbc.Driver
+       type: com.alibaba.druid.pool.DruidDataSource
+       jdbcUrl: jdbc:mysql://10.4.237.89:3306/han_hr_h3c?useUnicode=true&characterEncoding=utf-8&serverTimezone=Hongkong&useSSL=false
+       username: root
+       password: bigdata@qwe
+    addrecord:
+        driver-class-name: com.mysql.jdbc.Driver
+        type: com.alibaba.druid.pool.DruidDataSource
+        #jdbcUrl: jdbc:mysql://127.0.0.1:3306/add_record?useUnicode=true&characterEncoding=utf-8&serverTimezone=Hongkong&useSSL=false
+        jdbcUrl: jdbc:mysql://10.4.237.89:3306/add_record?useUnicode=true&characterEncoding=utf-8&serverTimezone=Hongkong&useSSL=false
+        username: root
+        password: bigdata@qwe
+        #password: root
+    asn:
+       driver-class-name: com.mysql.jdbc.Driver
+       type: com.alibaba.druid.pool.DruidDataSource
+       #jdbcUrl: jdbc:mysql://127.0.0.1:3306/dsj_1521?useUnicode=true&characterEncoding=utf-8&useSSL=false
+       jdbcUrl: jdbc:mysql://10.4.237.102:3306/dsj_1521?useUnicode=true&characterEncoding=utf-8&useSSL=false
+       username: dsj_1521
+       password: dsj_1521
+       #username: root
+       #password: root
+
+  redis:
+    host: 10.4.237.114
+    port: 6379
+    password: bgredis!
+
+project:
+  background-system:
+    ## OA从admin项目验证成功后,请求背调项目后直接跳转向项目主页
+    loginUrl: http://10.4.237.118/user/login
+    ## 文件服务器域名
+    staticUrl: http://10.4.237.42:8080/
+    ## 发送业务负责人审批,跳转向候选人详情所需链接
+    beSelectedDetailUrl: http://10.4.237.118/audit/{0}/{1}
+server:
+    max-http-post-size: 200*1024*1024
+      #tomcat:
+          #max-http-post-size: 30

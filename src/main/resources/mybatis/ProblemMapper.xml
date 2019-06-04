@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanergy.reportForms.mapper.problem.ProblemMapper">
+    <resultMap id="problem_resultmap" type="com.hanergy.reportForms.mapper.entity.Problem" >
+        <result property="tichubumen" column="fd_tichubumen"/>
+        <result property="tichuren" column="fd_tichuren"/>
+        <result property="tichubumenfuzeren" column="fd_tichubumenfuzeren"/>
+        <result property="shenqingriqi" column="fd_shenqingriqi"/>
+        <result property="wentileixing" column="fd_wentileixing"/>
+        <result property="chengbanrenquerenwentizhuan" column="fd_chengbanrenquerenwentizhuan"/>
+        <result property="wentimiaoshu" column="fd_wentimiaoshu"/>
+        <result property="jianyi" column="fd_jianyi"/>
+        <result property="chengbanbumen" column="fd_chengbanbumen"/>
+        <result property="chengbanbumenfuzeren" column="fd_chengbanbumenfuzeren"/>
+        <result property="chengbanren" column="fd_chengbanren"/>
+        <result property="wanchengshijian" column="fd_wanchengshijian"/>
+        <result property="cuoshijishuoming" column="fd_cuoshijishuoming"/>
+    </resultMap>
+    <sql id="Base_Column_list">
+     o.fd_tichubumen tichubumen,o.fd_tichuren tichuren,o.fd_tichubumenfuzeren tichubumenfuzeren,
+     o.fd_shenqingriqi shenqingriqi,o.fd_wentileixing wentileixing,o.fd_chengbanrenquerenwentizhuan chengbanrenquerenwentizhuan
+     ,o.fd_shifushishi shifushishi,o.fd_wentimiaoshu wentimiaoshu,o.fd_jianyi jianyi,o.fd_chengbanbumen chengbanbumen,
+     o.fd_chengbanbumenfuzeren chengbanbumenfuzeren,o.fd_chengbanren chengbanren,o.fd_wanchengshijian wanchengshijian,
+     o.fd_cuoshijishuoming cuoshijishuoming
+    </sql>
+
+
+    <select id="problemlist" parameterType="com.hanergy.reportForms.mapper.entity.Problem" resultType="map">
+        select <include refid="Base_Column_list"></include>
+        FROM oa_problem_solve o WHERE 1=1
+        <if test="applyStartDate!=null">
+            <![CDATA[AND DATE_FORMAT(o.fd_shenqingriqi,'%YYYY-%mm-%dd')>=DATE_FORMAT(#{applyStartDate,jdbcType=DATE},'%YYYY-%mm-%dd')]]>
+        </if>
+        <if test="applyEndDate!=null">
+            <![CDATA[AND DATE_FORMAT(o.fd_shenqingriqi,'%YYYY-%mm-%dd')<=DATE_FORMAT(#{applyEndDate,jdbcType=DATE},'%YYYY-%mm-%dd')]]>
+        </if>
+        <if test="finishStartDate!=null">
+            <![CDATA[AND DATE_FORMAT(o.fd_wanchengshijian,'%YYYY-%mm-%dd')>=DATE_FORMAT(#{finishStartDate,jdbcType=DATE},'%YYYY-%mm-%dd')]]>
+        </if>
+        <if test="finishEndDate!=null">
+            <![CDATA[AND DATE_FORMAT(o.fd_wanchengshijian,'%YYYY-%mm-%dd')<=DATE_FORMAT(#{finishEndDate,jdbcType=DATE},'%YYYY-%mm-%dd')]]>
+        </if>
+        ORDER BY o.fd_shenqingriqi DESC
+        <if test="pageNo!=null and pageSize!=null">
+            limit ${(pageNo-1)*pageSize},#{pageSize}
+        </if>
+    </select>
+    <select id="countProblem" parameterType="com.hanergy.reportForms.mapper.entity.Problem" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM oa_problem_solve o WHERE 1=1
+        <if test="applyStartDate!=null">
+            <![CDATA[AND DATE_FORMAT(o.fd_shenqingriqi,'%YYYY-%mm-%dd')>=DATE_FORMAT(#{applyStartDate,jdbcType=DATE},'%YYYY-%mm-%dd')]]>
+        </if>
+        <if test="applyEndDate!=null">
+            <![CDATA[AND DATE_FORMAT(o.fd_shenqingriqi,'%YYYY-%mm-%dd')<=DATE_FORMAT(#{applyEndDate,jdbcType=DATE},'%YYYY-%mm-%dd')]]>
+        </if>
+        <if test="finishStartDate!=null">
+            <![CDATA[AND DATE_FORMAT(o.fd_wanchengshijian,'%YYYY-%mm-%dd')>=DATE_FORMAT(#{finishStartDate,jdbcType=DATE},'%YYYY-%mm-%dd')]]>
+        </if>
+        <if test="finishEndDate!=null">
+            <![CDATA[AND DATE_FORMAT(o.fd_wanchengshijian,'%YYYY-%mm-%dd')<=DATE_FORMAT(#{finishEndDate,jdbcType=DATE},'%YYYY-%mm-%dd')]]>
+        </if>
+    </select>
+</mapper>

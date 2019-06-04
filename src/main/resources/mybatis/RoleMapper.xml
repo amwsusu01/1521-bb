@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanergy.reportForms.mapper.RoleMapper">
+
+    <resultMap id="userResultMap" type="com.hanergy.reportForms.mapper.entity.Role">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="cancel" column="cancel"/>
+        <result property="code" column="code"/>
+        <result property="des" column="des"/>
+        <collection property="functions" ofType="com.hanergy.reportForms.mapper.entity.Function">
+            <result property="id" column="functionId"/>
+            <result property="parentId" column="parent_id"/>
+            <result property="name" column="functionName"/>
+            <result property="url" column="url"/>
+            <result property="perms" column="perms"/>
+            <result property="orderNum" column="order_num"/>
+            <result property="icon" column="icon"/>
+            <result property="type" column="type"/>
+            <result property="code" column="functionCode"/>
+        </collection>
+    </resultMap>
+
+    <select id="getRoleByUserId" resultMap="userResultMap">
+        select
+        r.id,
+        r.name,
+        r.cancel,
+        r.code,
+        r.des,
+        f.id functionId,
+        f.name functionName,
+        f.parent_id,
+        f.url,
+        f.perms,
+        f.order_num,
+        f.icon,
+        f.type,
+        f.code functionCode
+        from role r,
+             user_role ur,
+             role_function rf,
+             function f
+        where ur.user = #{userId}
+          and ur.role = r.id
+          and r.id = rf.role
+          and rf.function = f.id
+    </select>
+
+</mapper>

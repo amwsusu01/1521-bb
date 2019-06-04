@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanergy.reportForms.mapper.PersonnelFlowMapper">
+    <sql id="Base_column">
+c.approver,c.recruiter,IFNULL(c.hrvp,"")hrvp,c.candidateId,c.candidateName,c.positionNumber,
+c.nationalidcardmun,IFNULL(c.busUnit,"")busUnit,
+c.jobTitle,c.jobLevel,c.buoncode,c.divicode,c.locationcode,
+c.hiringManager,IFNULL(c.leaderShip,"")leaderShip,c.resumeSource,c.talkSalaryDate,
+IFNULL(c.offerDate,"")offerDate,IFNULL(c.jobDate,"")jobDate,IFNULL(c.explanJobDate,"")explanJobDate
+</sql>
+    <select id="findQueryParam" parameterType="com.hanergy.reportForms.mapper.entity.JobApplication" resultType="map">
+        SELECT
+        c.approver,
+        GROUP_CONCAT(DISTINCT(c.recruiter) SEPARATOR",")recruiter,
+        GROUP_CONCAT(DISTINCT(c.hrvp) SEPARATOR",")hrvp,
+        GROUP_CONCAT(DISTINCT(c.buoncode) SEPARATOR",")buoncode,
+        GROUP_CONCAT(DISTINCT(c.divicode) SEPARATOR",")divicode,
+        GROUP_CONCAT(DISTINCT(c.busUnit) SEPARATOR",")busUnit
+        FROM 1521_candidate c
+        WHERE
+        1 = 1
+        <if test="approver!=''">
+            AND c.approver=#{approver}
+        </if>
+        <if test="approverList!=null">
+            AND c.approver IN
+            <foreach collection="approverList" index="index" item="approver" open="(" separator="," close=")">
+                #{approver}
+            </foreach>
+        </if>
+        <if test="recruiter!=''">
+            AND c.recruiter=#{recruiter}
+        </if>
+        <if test="recruiterList!=null">
+            AND c.recruiter IN
+            <foreach collection="recruiterList" index="index" item="recruiter" open="(" separator="," close=")">
+                #{recruiter}
+            </foreach>
+        </if>
+        <if test="hrvp!=''">
+            AND c.hrvp=#{hrvp}
+        </if>
+        <if test="hrvpList!=null">
+            AND c.hrvp IN
+            <foreach collection="hrvpList" index="index" item="hrvp" open="(" separator="," close=")">
+                #{hrvp}
+            </foreach>
+        </if>
+        <if test="buoncode!=''">
+            AND c.buoncode=#{buoncode}
+        </if>
+        <if test="buoncodeList!=null">
+            AND c.buoncode IN
+            <foreach collection="buoncodeList" index="index" item="buoncodeList" open="(" separator="," close=")">
+                #{buoncodeList}
+            </foreach>
+        </if>
+        <if test="divicode!=''">
+            AND c.divicode=#{divicode}
+        </if>
+        <if test="divicodeList!=null">
+            AND c.divicode IN
+            <foreach collection="divicodeList" index="index" item="divicode" open="(" separator="," close=")">
+                #{divicode}
+            </foreach>
+        </if>
+        <if test="busUnit!=''">
+            AND c.busUnit=#{busUnit}
+        </if>
+        <if test="busUnitList!=null">
+            AND c.busUnit IN
+            <foreach collection="busUnitList" index="index" item="busUnit" open="(" separator="," close=")">
+                #{busUnit}
+            </foreach>
+        </if>
+        GROUP BY c.approver
+    </select>
+    <select id="find1521bakByCreateDate"  resultType="map">
+        SELECT
+        <include refid="Base_column"></include>,DATE_FORMAT(c.create_date,"%Y-%m-%d")createDate
+        FROM 1521_candidate_bak c
+        WHERE DATE_FORMAT(c.create_date,"%Y-%m-%d")>="2019-04-16"
+        <![CDATA[AND DATE_FORMAT(c.create_date,"%Y-%m-%d") <= "2019-04-17"]]>
+    </select>
+    <select id="findByParam" parameterType="com.hanergy.reportForms.mapper.entity.JobApplication"
+            resultType="map">
+        SELECT
+        <include refid="Base_column"></include>
+        FROM 1521_candidate c
+        WHERE 1 = 1
+        <if test="talkStartDate!='' and talkEndDate!=''
+        and offerStartDate!='' and offerEndDate!=''
+        and jobStartDate!='' and jobEndDate!=''">
+            AND (
+            c.talkSalaryDate >= #{talkStartDate}
+            <![CDATA[AND c.talkSalaryDate <= #{talkEndDate}]]>
+            OR c.offerDate >= #{offerStartDate}
+            <![CDATA[AND c.offerDate <= #{offerEndDate}]]>
+            OR c.jobDate >= #{jobStartDate}
+            <![CDATA[AND c.jobDate <= #{jobEndDate}]]>
+            )
+        </if>
+        <if test="talkStartDate!='' and talkEndDate!=''
+        and offerStartDate!='' and offerEndDate!=''
+        and jobStartDate==''.toString() and jobEndDate==''.toString()">
+            AND (
+            c.talkSalaryDate >= #{talkStartDate}
+            <![CDATA[AND c.talkSalaryDate <= #{talkEndDate}]]>
+            OR c.offerDate >= #{offerStartDate}
+            <![CDATA[AND c.offerDate <= #{offerEndDate}]]>
+            )
+        </if>
+        <if test="talkStartDate==''.toString() and talkEndDate==''.toString()
+        and offerStartDate!='' and offerEndDate!=''
+        and jobStartDate!='' and jobEndDate!=''">
+            AND (
+             c.offerDate >= #{offerStartDate}
+            <![CDATA[AND c.offerDate <= #{offerEndDate}]]>
+            OR c.jobDate >= #{jobStartDate}
+            <![CDATA[AND c.jobDate <= #{jobEndDate}]]>
+            )
+        </if>
+        <if test="talkStartDate!='' and talkEndDate!=''
+        and offerStartDate==''.toString() and offerEndDate==''.toString()
+        and jobStartDate!='' and jobEndDate!=''">
+            AND (
+            c.talkSalaryDate >= #{talkStartDate}
+            <![CDATA[AND c.talkSalaryDate <= #{talkEndDate}]]>
+            OR c.jobDate >= #{jobStartDate}
+            <![CDATA[AND c.jobDate <= #{jobEndDate}]]>
+            )
+        </if>
+        <if test="talkStartDate!='' and talkEndDate!=''
+        and offerStartDate==''.toString() and offerEndDate==''.toString()
+        and jobStartDate==''.toString() and jobEndDate==''.toString()">
+            AND c.talkSalaryDate >= #{talkStartDate}
+            <![CDATA[AND c.talkSalaryDate <= #{talkEndDate}]]>
+        </if>
+        <if test="talkStartDate==''.toString() and talkEndDate==''.toString()
+        and offerStartDate!='' and offerEndDate!=''
+        and jobStartDate==''.toString() and jobEndDate==''.toString()">
+            AND c.offerDate >= #{offerStartDate}
+            <![CDATA[AND c.offerDate <= #{offerEndDate}]]>
+        </if>
+        <if test="talkStartDate==''.toString() and talkEndDate==''.toString()
+        and offerStartDate==''.toString() and offerEndDate==''.toString()
+        and jobStartDate!='' and jobEndDate!=''">
+            AND c.jobDate >= #{jobStartDate}
+            <![CDATA[AND c.jobDate <= #{jobEndDate}]]>
+        </if>
+        <if test="approver!=''">
+            AND c.approver=#{approver}
+        </if>
+        <if test="approverList!=null">
+            AND c.approver IN
+            <foreach collection="approverList" index="index" item="approver" open="(" separator="," close=")">
+                #{approver}
+            </foreach>
+        </if>
+        <if test="recruiter!=''">
+            AND c.recruiter=#{recruiter}
+        </if>
+        <if test="recruiterList!=null">
+            AND c.recruiter IN
+            <foreach collection="recruiterList" index="index" item="recruiter" open="(" separator="," close=")">
+                #{recruiter}
+            </foreach>
+        </if>
+        <if test="hrvp!=''">
+            AND c.hrvp=#{hrvp}
+        </if>
+        <if test="hrvpList!=null">
+            AND c.hrvp IN
+            <foreach collection="hrvpList" index="index" item="hrvp" open="(" separator="," close=")">
+                #{hrvp}
+            </foreach>
+        </if>
+        <if test="buoncode!=''">
+            AND c.buoncode=#{buoncode}
+        </if>
+        <if test="buoncodeList!=null">
+            AND c.buoncode IN
+            <foreach collection="buoncodeList" index="index" item="buoncode" open="(" separator="," close=")">
+                #{buoncode}
+            </foreach>
+        </if>
+        <if test="divicode!=''">
+            AND c.divicode=#{divicode}
+        </if>
+        <if test="divicodeList!=null">
+            AND c.divicode IN
+            <foreach collection="divicodeList" index="index" item="divicode" open="(" separator="," close=")">
+                #{divicode}
+            </foreach>
+        </if>
+        <if test="busUnit!=''">
+            AND c.busUnit=#{busUnit}
+        </if>
+        <if test="busUnitList!=null">
+            AND c.busUnit IN
+            <foreach collection="busUnitList" index="index" item="busUnit" open="(" separator="," close=")">
+                #{busUnit}
+            </foreach>
+        </if>
+        <if test="jobTitle!=''">
+            AND INSTR(c.jobTitle,#{jobTitle})
+        </if>
+        <if test="candidateName!=''">
+            AND INSTR(c.candidateName,#{candidateName})
+        </if>
+        <if test="positionNumber!=''">
+            AND c.positionNumber=#{positionNumber}
+        </if>
+        <if test="page!=null and pageSize!=null">
+            limit ${(page-1)*pageSize},#{pageSize}
+        </if>
+    </select>
+    <select id="countJobApplication" parameterType="com.hanergy.reportForms.mapper.entity.JobApplication"
+            resultType="java.lang.Integer">
+        SELECT count(c.candidateId) FROM 1521_candidate c WHERE 1 = 1
+        <if test="talkStartDate!='' and talkEndDate!=''
+        and offerStartDate!='' and offerEndDate!=''
+        and jobStartDate!='' and jobEndDate!=''">
+            AND (
+            c.talkSalaryDate >= #{talkStartDate}
+            <![CDATA[AND c.talkSalaryDate <= #{talkEndDate}]]>
+            OR c.offerDate >= #{offerStartDate}
+            <![CDATA[AND c.offerDate <= #{offerEndDate}]]>
+            OR c.jobDate >= #{jobStartDate}
+            <![CDATA[AND c.jobDate <= #{jobEndDate}]]>
+            )
+        </if>
+        <if test="talkStartDate!='' and talkEndDate!=''
+        and offerStartDate!='' and offerEndDate!=''
+        and jobStartDate==''.toString() and jobEndDate==''.toString()">
+            AND (
+            c.talkSalaryDate >= #{talkStartDate}
+            <![CDATA[AND c.talkSalaryDate <= #{talkEndDate}]]>
+            OR c.offerDate >= #{offerStartDate}
+            <![CDATA[AND c.offerDate <= #{offerEndDate}]]>
+            )
+        </if>
+        <if test="talkStartDate==''.toString() and talkEndDate==''.toString()
+        and offerStartDate!='' and offerEndDate!=''
+        and jobStartDate!='' and jobEndDate!=''">
+            AND (
+            c.offerDate >= #{offerStartDate}
+            <![CDATA[AND c.offerDate <= #{offerEndDate}]]>
+            OR c.jobDate >= #{jobStartDate}
+            <![CDATA[AND c.jobDate <= #{jobEndDate}]]>
+            )
+        </if>
+        <if test="talkStartDate!='' and talkEndDate!=''
+        and offerStartDate==''.toString() and offerEndDate==''.toString()
+        and jobStartDate!='' and jobEndDate!=''">
+            AND (
+            c.talkSalaryDate >= #{talkStartDate}
+            <![CDATA[AND c.talkSalaryDate <= #{talkEndDate}]]>
+            OR c.jobDate >= #{jobStartDate}
+            <![CDATA[AND c.jobDate <= #{jobEndDate}]]>
+            )
+        </if>
+        <if test="talkStartDate!='' and talkEndDate!=''
+        and offerStartDate==''.toString() and offerEndDate==''.toString()
+        and jobStartDate==''.toString() and jobEndDate==''.toString()">
+            AND c.talkSalaryDate >= #{talkStartDate}
+            <![CDATA[AND c.talkSalaryDate <= #{talkEndDate}]]>
+        </if>
+        <if test="talkStartDate==''.toString() and talkEndDate==''.toString()
+        and offerStartDate!='' and offerEndDate!=''
+        and jobStartDate==''.toString() and jobEndDate==''.toString()">
+            AND c.offerDate >= #{offerStartDate}
+            <![CDATA[AND c.offerDate <= #{offerEndDate}]]>
+        </if>
+        <if test="talkStartDate==''.toString() and talkEndDate==''.toString()
+        and offerStartDate==''.toString() and offerEndDate==''.toString()
+        and jobStartDate!='' and jobEndDate!=''">
+            AND c.jobDate >= #{jobStartDate}
+            <![CDATA[AND c.jobDate <= #{jobEndDate}]]>
+        </if>
+        <if test="approver!=''">
+            AND c.approver=#{approver}
+        </if>
+        <if test="approverList!=null">
+            AND c.approver IN
+            <foreach collection="approverList" index="index" item="approver" open="(" separator="," close=")">
+                #{approver}
+            </foreach>
+        </if>
+        <if test="recruiter!=''">
+            AND c.recruiter=#{recruiter}
+        </if>
+        <if test="recruiterList!=null">
+            AND c.recruiter IN
+            <foreach collection="recruiterList" index="index" item="recruiter" open="(" separator="," close=")">
+                #{recruiter}
+            </foreach>
+        </if>
+        <if test="hrvp!=''">
+            AND c.hrvp=#{hrvp}
+        </if>
+        <if test="hrvpList!=null">
+            AND c.hrvp IN
+            <foreach collection="hrvpList" index="index" item="hrvp" open="(" separator="," close=")">
+                #{hrvp}
+            </foreach>
+        </if>
+        <if test="buoncode!=''">
+            AND c.buoncode=#{buoncode}
+        </if>
+        <if test="buoncodeList!=null">
+            AND c.buoncode IN
+            <foreach collection="buoncodeList" index="index" item="buoncode" open="(" separator="," close=")">
+                #{buoncode}
+            </foreach>
+        </if>
+        <if test="divicode!=''">
+            AND c.divicode=#{divicode}
+        </if>
+        <if test="divicodeList!=null">
+            AND c.divicode IN
+            <foreach collection="divicodeList" index="index" item="divicode" open="(" separator="," close=")">
+                #{divicode}
+            </foreach>
+        </if>
+        <if test="busUnit!=''">
+            AND c.busUnit=#{busUnit}
+        </if>
+        <if test="busUnitList!=null">
+            AND c.busUnit IN
+            <foreach collection="busUnitList" index="index" item="busUnit" open="(" separator="," close=")">
+                #{busUnit}
+            </foreach>
+        </if>
+        <if test="jobTitle!=''">
+            AND INSTR(c.jobTitle,#{jobTitle})
+        </if>
+        <if test="candidateName!=''">
+            AND INSTR(c.candidateName,#{candidateName})
+        </if>
+        <if test="positionNumber!=''">
+            AND c.positionNumber=#{positionNumber}
+        </if>
+    </select>
+    <insert id="createPersonnelFlow" parameterType="java.util.List">
+        INSERT INTO 1521_candidate ( approver, recruiter, hrvp,candidateId, candidateName, positionNumber,
+        nationalidcardmun,
+        jobTitle, jobLevel, buoncode, divicode, locationcode, hiringManager, leaderShip, resumeSource, talkSalaryDate,
+        offerDate, jobDate,explanJobDate) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.approver},#{item.recruiter},#{item.hrvp},#{item.candidateId},#{item.candidateName},
+            #{item.positionNumber},#{item.nationalidcardmun},
+            #{item.jobTitle},#{item.jobLevel},#{item.buoncode},#{item.divicode},#{item.locationcode},
+            #{item.hiringManager},#{item.leaderShip},#{item.resumeSource},#{item.talkSalaryDate},#{item.offerDate},#{item.jobDate},#{item.explanJobDate})
+        </foreach>
+    </insert>
+    <insert id="createPersonnelFlowBak" parameterType="java.util.List">
+        INSERT INTO 1521_candidate_bak ( approver, recruiter, hrvp,candidateId, candidateName, positionNumber,
+        nationalidcardmun,
+        jobTitle, jobLevel, buoncode, divicode, locationcode, hiringManager, leaderShip, resumeSource, talkSalaryDate,
+        offerDate, jobDate,explanJobDate,create_date) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.approver},#{item.recruiter},#{item.hrvp},#{item.candidateId},#{item.candidateName},
+            #{item.positionNumber},#{item.nationalidcardmun},
+            #{item.jobTitle},#{item.jobLevel},#{item.buoncode},#{item.divicode},#{item.locationcode},
+            #{item.hiringManager},#{item.leaderShip},#{item.resumeSource},#{item.talkSalaryDate},
+            #{item.offerDate},#{item.jobDate},#{item.explanJobDate},SYSDATE())
+        </foreach>
+    </insert>
+    <delete id="truncatePersonnelFlow">
+        truncate table 1521_candidate
+    </delete>
+    <select id="queryData" resultType="com.hanergy.reportForms.mapper.entity.UrlData">
+        SELECT
+        logid,
+        employeeID,
+        empname,
+        inputtime,
+        leadercode,
+        leader_empname,
+        content,
+        time
+        FROM
+        temp_input
+    </select>
+    <select id="findLastModifiedDateTime" resultType="string">
+        SELECT DATE_FORMAT(c.talkSalaryDate,"%Y-%m-%dT%H:%m:%s")talkSalaryDate FROM 1521_candidate c ORDER BY c.talkSalaryDate DESC LIMIT 0,1
+    </select>
+    <insert id="createUrlDate" parameterType="java.util.List">
+        INSERT INTO temp_output (
+        logid,
+        employeeID,
+        empname,
+        inputtime,
+        leadercode,
+        leader_empname,
+        content,
+        time) VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.logid},#{item.employeeID},#{item.empname},#{item.inputtime},#{item.leadercode},
+            #{item.leader_empname},#{item.content},
+            #{item.time})
+        </foreach>
+
+    </insert>
+</mapper>
+

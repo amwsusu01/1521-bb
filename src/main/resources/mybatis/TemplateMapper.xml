@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanergy.reportForms.mapper.TemplateMapper">
+
+    <!-- 通用查询映射结果 -->
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, code, name, postType, workType, rank, cancel, deltag,des , investUnit
+    </sql>
+
+
+	<resultMap id="template_order_resultmap" type="com.hanergy.reportForms.entity.template.TemplateInfo" >
+	    <id property="id" column="id"/>
+	    <result property="code" column="code"/>
+	    <result property="name" column="name"/>
+	    <result property="cancel" column="cancel"/>
+	    <result property="postType" column="postType"/> 
+	    <result property="workType" column="workType"/>
+	    <result property="rank" column="rank"/>
+	    <result property="rankMax" column="rank_max"/>
+	    <!-- 配置一对多关联映射 -->
+	    <collection property="relationArr" ofType="com.hanergy.reportForms.entity.template.TemplatePlanEntitiy">
+	        <!-- id对应Orders类的主键属性 -->
+	        <result property="agencyType" column="agencyType"/>
+			<result property="agencyPlanId" column="agencyPlanId"/>
+	        <!-- 配置一对多关联映射 -->
+		   	 <collection property="itemList" ofType="com.hanergy.reportForms.entity.template.CheckItemEntity">
+		        <!-- id对应Orders类的主键属性 -->
+		        <id property="id" column="itemId"/>
+		        <result property="code" column="itemCode"/>
+		        <result property="name" column="itemName"/>
+		    </collection>
+	    </collection>
+	    
+	</resultMap>
+	
+	<select id="queryTemplateList"  resultMap="template_order_resultmap">
+		 SELECT a.id,a.code ,a.name ,a.cancel , a.postType,a.workType,a.rank ,a.rank_max,b.id agencyPlanId,b.agencyType agencyType ,e.id itemId, e.code  itemCode,
+		e.name itemName	from 
+		(
+		select *  from template t
+			 limit #{start},#{end}
+			) 
+			a ,agency_plan  b   , check_template d ,check_item e
+		WHERE a.id = b.template 
+		and b.id = d.agencyPlanId
+		and d.project = e.id 
+		order by a.code
+	</select>
+	<select id="queryTemplateOrderList"  resultMap="template_order_resultmap">
+			
+			SELECT j.*,d.id itemId, d.code  itemCode,
+					d.name itemName from (
+			SELECT h.*,c.project from 
+			(
+				SELECT a.*,b.id agencyPlanId,b.agencyType agencyType  from (
+						select t.id,t.code ,t.name ,t.cancel , t.postType,t.workType,t.rank ,t.rank_max  from template t
+							limit #{start},#{end}  
+				 )
+				a
+				LEFT JOIN agency_plan  b
+				ON  a.id = b.template 
+			) h LEFT JOIN check_template c
+			ON h.agencyPlanId = c.agencyPlanId
+			) j LEFT JOIN check_item d
+				ON j.project = d.id
+			ORDER BY j.code,j.agencyType,j.agencyPlanId,d.code
+	</select>
+	
+		
+	<update id="updateTemplateById"  >
+		UPDATE template  t
+  		<set>
+  			<if test="template.name!=null">
+  				t.name = #{template.name} ,
+  			</if>
+  			<if test="template.postType!=null">
+  				t.postType = #{template.postType},
+  			</if>
+  			<if test="template.workType!=null">
+  				t.workType = #{template.workType},
+  			</if>
+  			<if test="template.rank!=null">
+  				t.rank = #{template.rank},
+  			</if>
+  			<if test="template.rankMax!=null">
+  				t.rank_max = #{template.rankMax},
+  			</if>
+  			<if test="template.cancel!=null">
+  				t.cancel = #{template.cancel},
+  			</if>
+  			<if test="template.deltag!=null">
+  				t.deltag = #{template.deltag},
+  			</if>
+  			<if test="template.des!=null">
+  				t.des = #{template.des},
+  			</if>
+  			<if test="template.investUnit!=null">
+  				t.investUnit = #{template.investUnit}
+  			</if>
+  		</set>
+  		<where>
+  			t.id = #{template.id}
+  		</where>
+	
+	</update>
+	
+	<select id="getTemplateInfoById"   resultMap="template_order_resultmap">
+		SELECT a.id,a.code ,a.name ,a.cancel ,  a.postType,a.workType,a.rank,a.rank_max,b.agencyType agencyType,b.id agencyPlanId, e.id itemId, e.code  itemCode,
+		e.name itemName	from (
+		select * from template t
+			WHERE t.id = #{id}
+			) 
+			a ,agency_plan  b  , check_template d ,check_item e
+		WHERE a.id = b.template 
+		and b.id = d.agencyPlanId
+		and d.project = e.id 
+ 
+				 
+	</select>
+	
+	<select id="getCandidateToTemplateMap"  resultType="java.util.HashMap">
+				SELECT t.id,t.template from beSelected t
+				WHERE t.template > 0 
+	
+	</select>
+	
+    <resultMap id="mediaTemplateMap" type="com.hanergy.reportForms.dto.third.MediTemplate">
+        <id column="id" property="id"/>
+        <result column="code" property="code"/>
+        <result column="name" property="name"/>
+        <collection property="plans" ofType="com.hanergy.reportForms.dto.third.MediaAgencyPlan">
+            <id column="agencyPlanId" property="id"/>
+            <result column="agencyType" property="agencyType"/>
+            <collection property="items" ofType="com.hanergy.reportForms.entity.template.CheckItemEntity">
+                <id column="itemId" property="id"/>
+                <result column="itemCode" property="code"/>
+                <result column="itemName" property="name"/>
+            </collection>
+        </collection>
+
+    </resultMap>
+
+    <select id="getMediaTemplateById" resultMap="mediaTemplateMap">
+        select a.id,
+               a.code,
+               a.name,
+               ap.id   agencyPlanId,
+               ap.agencyType,
+               ci.id   itemId,
+               ci.name itemName,
+               ci.code itemCode
+        from (select * from template t where t.id = #{templateId}) a,
+             agency_plan ap,
+             check_template ct,
+             check_item ci
+        where a.id = ap.template
+          and ap.agencyType = 3
+          and ap.id = ct.agencyPlanId
+          and ct.project = ci.id;
+    </select>
+    <select id="getCheckItemsByAgencyPlanId" resultType="com.hanergy.reportForms.entity.template.CheckItemEntity">
+        select ci.id, ci.code, ci.name
+        from agency_plan ap,
+             check_template ct,
+             check_item ci
+        where ap.id = #{agencyPlanId}
+          and ap.id = ct.agencyPlanId
+          and ct.project = ci.id
+    </select>
+	
+</mapper>

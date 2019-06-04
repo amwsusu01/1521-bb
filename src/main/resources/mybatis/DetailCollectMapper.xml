@@ -1,0 +1,1529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanergy.reportForms.mapper.detailcollect.DetailCollectMapper">
+
+    <select id="cgscdetail" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.util.LinkedHashMap">
+        select d.month1,d.inputtime,d.employeeID, d.realName, d.frameName, d.konggujituan, d.shiyequn, d.shiyebu,
+        d.shenggongsi from all_1521_dsj_nlf_detail d WHERE 1=1
+        <if test="beginDate!=''">
+            <![CDATA[AND d.month1>=#{beginDate}]]>
+        </if>
+        <if test="endDate!=''">
+            <![CDATA[AND d.month1<=#{endDate}]]>
+        </if>
+        <if test="jituan!=''">
+            AND d.konggujituan=#{jituan}
+        </if>
+        <if test="jituanList!=null">
+            AND d.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequn!=''">
+            AND d.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyequnList!=null">
+            AND d.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebu!=''">
+            AND d.shiyebu=#{shiyebu}
+        </if>
+        <if test="shiyebuList!=null">
+            AND d.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsi!=''">
+            AND d.shenggongsi=#{shenggongsi}
+        </if>
+        <if test="shenggongsiList!=null">
+            AND d.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dept!=''">
+            AND d.frameName=#{dept}
+        </if>
+        <if test="deptList!=null">
+            AND d.frameName in
+            <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGrade!=''">
+            AND d.type=#{jobGrade}
+        </if>
+        <if test="jobGradeList!=null">
+            AND d.type in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(d.realName," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND d.employeeID=#{employeeID}
+        </if>
+        ORDER BY d.inputtime DESC
+        <if test="page!=null and pageSize!=null">
+            limit ${(page-1)*pageSize},#{pageSize}
+        </if>
+    </select>
+    <select id="countCgscdetail" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.lang.Integer">
+        select count(*) from all_1521_dsj_nlf_detail d WHERE 1=1
+        <if test="beginDate!=''">
+            <![CDATA[AND d.month1>=#{beginDate}]]>
+        </if>
+        <if test="endDate!=''">
+            <![CDATA[AND d.month1<=#{endDate}]]>
+        </if>
+        <if test="jituan!=''">
+            AND d.konggujituan=#{jituan}
+        </if>
+        <if test="jituanList!=null">
+            AND d.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequn!=''">
+            AND d.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyequnList!=null">
+            AND d.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebu!=''">
+            AND d.shiyebu=#{shiyebu}
+        </if>
+        <if test="shiyebuList!=null">
+            AND d.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsi!=''">
+            AND d.shenggongsi=#{shenggongsi}
+        </if>
+        <if test="shenggongsiList!=null">
+            AND d.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dept!=''">
+            AND d.frameName=#{dept}
+        </if>
+        <if test="deptList!=null">
+            AND d.frameName in
+            <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGrade!=''">
+            AND d.type=#{jobGrade}
+        </if>
+        <if test="jobGradeList!=null">
+            AND d.type in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(d.realName," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND d.employeeID=#{employeeID}
+        </if>
+    </select>
+
+    <select id="tsxywDetail" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.util.LinkedHashMap">
+        select d.in_month, d.in_date, substr(d.inputtime,1,19) in_datetime, d.employeeID, d.empname, d.departmentname,
+        d.content_new,
+        d.konggujituan, d.shiyequn, d.shiyebu, d.shenggongsi
+        from all_1521_tiaoshu5_hanzq_dtl d WHERE 1=1
+        <if test="beginDate!=''">
+            <![CDATA[AND d.in_month>=#{beginDate}]]>
+        </if>
+        <if test="endDate!=''">
+            <![CDATA[AND d.in_month<=#{endDate}]]>
+        </if>
+        <if test="jituan!=''">
+            AND d.konggujituan=#{jituan}
+        </if>
+        <if test="jituanList!=null">
+            AND d.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequn!=''">
+            AND d.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyequnList!=null">
+            AND d.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebu!=''">
+            AND d.shiyebu=#{shiyebu}
+        </if>
+        <if test="shiyebuList!=null">
+            AND d.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsi!=''">
+            AND d.shenggongsi=#{shenggongsi}
+        </if>
+        <if test="shenggongsiList!=null">
+            AND d.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dept!=''">
+            AND d.departmentname=#{dept}
+        </if>
+        <if test="deptList!=null">
+            AND d.departmentname in
+            <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGrade!=''">
+            AND d.level_stage=#{jobGrade}
+        </if>
+        <if test="jobGradeList!=null">
+            AND d.level_stage in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(d.empname," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND d.employeeID=#{employeeID}
+        </if>
+        ORDER BY d.in_date DESC
+        <if test="page!=null and pageSize!=null">
+            limit ${(page-1)*pageSize},#{pageSize}
+        </if>
+    </select>
+    <select id="countTsxywDetail" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.lang.Integer">
+        select COUNT(*) from all_1521_tiaoshu5_hanzq_dtl d WHERE 1=1
+        <if test="beginDate!=''">
+            <![CDATA[AND d.in_month>=#{beginDate}]]>
+        </if>
+        <if test="endDate!=''">
+            <![CDATA[AND d.in_month<=#{endDate}]]>
+        </if>
+        <if test="jituan!=''">
+            AND d.konggujituan=#{jituan}
+        </if>
+        <if test="jituanList!=null">
+            AND d.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequn!=''">
+            AND d.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyequnList!=null">
+            AND d.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebu!=''">
+            AND d.shiyebu=#{shiyebu}
+        </if>
+        <if test="shiyebuList!=null">
+            AND d.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsi!=''">
+            AND d.shenggongsi=#{shenggongsi}
+        </if>
+        <if test="shenggongsiList!=null">
+            AND d.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dept!=''">
+            AND d.departmentname=#{dept}
+        </if>
+        <if test="deptList!=null">
+            AND d.departmentname in
+            <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGrade!=''">
+            AND d.level_stage=#{jobGrade}
+        </if>
+        <if test="jobGradeList!=null">
+            AND d.level_stage in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(d.empname," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND d.employeeID=#{employeeID}
+        </if>
+    </select>
+
+    <select id="zsxywDetail" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.util.LinkedHashMap">
+        select d.in_month, d.in_date, substr(d.inputtime,1,19) in_datetime, d.employeeID, d.empname, d.departmentname,
+        d.content_new,
+        d.konggujituan, d.shiyequn, d.shiyebu, d.shenggongsi
+        from all_1521_zishu5_hanzq_dtl d where 1=1
+        <if test="beginDate!=''">
+            <![CDATA[AND d.in_month>=#{beginDate}]]>
+        </if>
+        <if test="endDate!=''">
+            <![CDATA[AND d.in_month<=#{endDate}]]>
+        </if>
+        <if test="jituan!=''">
+            AND d.konggujituan=#{jituan}
+        </if>
+        <if test="jituanList!=null">
+            AND d.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequn!=''">
+            AND d.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyequnList!=null">
+            AND d.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebu!=''">
+            AND d.shiyebu=#{shiyebu}
+        </if>
+        <if test="shiyebuList!=null">
+            AND d.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsi!=''">
+            AND d.shenggongsi=#{shenggongsi}
+        </if>
+        <if test="shenggongsiList!=null">
+            AND d.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dept!=''">
+            AND d.departmentname=#{dept}
+        </if>
+        <if test="deptList!=null">
+            AND d.departmentname in
+            <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGrade!=''">
+            AND d.level_stage=#{jobGrade}
+        </if>
+        <if test="jobGradeList!=null">
+            AND d.level_stage in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(d.empname," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND d.employeeID=#{employeeID}
+        </if>
+        ORDER BY d.inputtime DESC
+        <if test="page!=null and pageSize!=null">
+            limit ${(page-1)*pageSize},#{pageSize}
+        </if>
+    </select>
+    <select id="countZsxywDetail" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.lang.Integer">
+        select COUNT(*) from all_1521_zishu5_hanzq_dtl d where 1=1
+        <if test="beginDate!=''">
+            <![CDATA[AND d.in_month>=#{beginDate}]]>
+        </if>
+        <if test="endDate!=''">
+            <![CDATA[AND d.in_month<=#{endDate}]]>
+        </if>
+        <if test="jituan!=''">
+            AND d.konggujituan=#{jituan}
+        </if>
+        <if test="jituanList!=null">
+            AND d.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequn!=''">
+            AND d.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyequnList!=null">
+            AND d.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebu!=''">
+            AND d.shiyebu=#{shiyebu}
+        </if>
+        <if test="shiyebuList!=null">
+            AND d.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsi!=''">
+            AND d.shenggongsi=#{shenggongsi}
+        </if>
+        <if test="shenggongsiList!=null">
+            AND d.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dept!=''">
+            AND d.departmentname=#{dept}
+        </if>
+        <if test="deptList!=null">
+            AND d.departmentname in
+            <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGrade!=''">
+            AND d.level_stage=#{jobGrade}
+        </if>
+        <if test="jobGradeList!=null">
+            AND d.level_stage in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(d.empname," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND d.employeeID=#{employeeID}
+        </if>
+    </select>
+
+    <select id="jdzqDetail" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.util.LinkedHashMap">
+        SELECT d.month, substr(d.inputtime, 1, 10) AS DAY , DATE_FORMAT(d.inputtime, '%Y-%m-%d %H:%i:%S') AS inputtime,
+        d.employeeID , d.emp_name,
+        d.dept_name, d.content_new,d.konggujituan, d.shiyequn , d.shiyebu, d.shenggongsi
+        FROM all_1521_dsj_time_interval_detail d WHERE d.type = '9'
+        <if test="beginDate!=''">
+            <![CDATA[AND d.month>=#{beginDate}]]>
+        </if>
+        <if test="endDate!=''">
+            <![CDATA[AND d.month<=#{endDate}]]>
+        </if>
+        <if test="jituan!=''">
+            AND d.konggujituan=#{jituan}
+        </if>
+        <if test="jituanList!=null">
+            AND d.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequn!=''">
+            AND d.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyequnList!=null">
+            AND d.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebu!=''">
+            AND d.shiyebu=#{shiyebu}
+        </if>
+        <if test="shiyebuList!=null">
+            AND d.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsi!=''">
+            AND d.shenggongsi=#{shenggongsi}
+        </if>
+        <if test="shenggongsiList!=null">
+            AND d.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dept!=''">
+            AND d.dept_name=#{dept}
+        </if>
+        <if test="deptList!=null">
+            AND d.dept_name in
+            <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGrade!=''">
+            AND d.type1=#{jobGrade}
+        </if>
+        <if test="jobGradeList!=null">
+            AND d.type1 in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(d.emp_name," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND d.employeeID=#{employeeID}
+        </if>
+        ORDER BY d.inputtime DESC
+        <if test="page!=null and pageSize!=null">
+            limit ${(page-1)*pageSize},#{pageSize}
+        </if>
+    </select>
+    <select id="countJdzqDetail" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM all_1521_dsj_time_interval_detail d WHERE d.type = '9'
+        <if test="beginDate!=''">
+            <![CDATA[AND d.month>=#{beginDate}]]>
+        </if>
+        <if test="endDate!=''">
+            <![CDATA[AND d.month<=#{endDate}]]>
+        </if>
+        <if test="jituan!=''">
+            AND d.konggujituan=#{jituan}
+        </if>
+        <if test="jituanList!=null">
+            AND d.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequn!=''">
+            AND d.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyequnList!=null">
+            AND d.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebu!=''">
+            AND d.shiyebu=#{shiyebu}
+        </if>
+        <if test="shiyebuList!=null">
+            AND d.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsi!=''">
+            AND d.shenggongsi=#{shenggongsi}
+        </if>
+        <if test="shenggongsiList!=null">
+            AND d.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dept!=''">
+            AND d.dept_name=#{dept}
+        </if>
+        <if test="deptList!=null">
+            AND d.dept_name in
+            <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGrade!=''">
+            AND d.type1=#{jobGrade}
+        </if>
+        <if test="jobGradeList!=null">
+            AND d.type1 in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(d.emp_name," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND d.employeeID=#{employeeID}
+        </if>
+    </select>
+
+    <select id="sedzqDetail" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.util.LinkedHashMap">
+        select d.month, substr(d.inputtime,1,10) day , DATE_FORMAT(d.inputtime,'%Y-%m-%d %H:%i:%S') AS inputtime,
+        d.employeeID, d.emp_name, d.dept_name, d.content_new,
+        d.konggujituan, d.shiyequn, d.shiyebu, d.shenggongsi
+        from all_1521_dsj_time_interval_detail d where d.type='12'
+        <if test="beginDate!=''">
+            <![CDATA[AND d.month>=#{beginDate}]]>
+        </if>
+        <if test="endDate!=''">
+            <![CDATA[AND d.month<=#{endDate}]]>
+        </if>
+        <if test="jituan!=''">
+            AND d.konggujituan=#{jituan}
+        </if>
+        <if test="jituanList!=null">
+            AND d.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequn!=''">
+            AND d.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyequnList!=null">
+            AND d.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebu!=''">
+            AND d.shiyebu=#{shiyebu}
+        </if>
+        <if test="shiyebuList!=null">
+            AND d.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsi!=''">
+            AND d.shenggongsi=#{shenggongsi}
+        </if>
+        <if test="shenggongsiList!=null">
+            AND d.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dept!=''">
+            AND d.dept_name=#{dept}
+        </if>
+        <if test="deptList!=null">
+            AND d.dept_name in
+            <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGrade!=''">
+            AND d.type1=#{jobGrade}
+        </if>
+        <if test="jobGradeList!=null">
+            AND d.type1 in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(d.emp_name," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND d.employeeID=#{employeeID}
+        </if>
+        ORDER BY d.inputtime DESC
+        <if test="page!=null and pageSize!=null">
+            limit ${(page-1)*pageSize},#{pageSize}
+        </if>
+    </select>
+    <select id="countSedzqDetail" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.lang.Integer">
+        select COUNT(*) from all_1521_dsj_time_interval_detail d where d.type='12'
+        <if test="beginDate!=''">
+            <![CDATA[AND d.month>=#{beginDate}]]>
+        </if>
+        <if test="endDate!=''">
+            <![CDATA[AND d.month<=#{endDate}]]>
+        </if>
+        <if test="jituan!=''">
+            AND d.konggujituan=#{jituan}
+        </if>
+        <if test="jituanList!=null">
+            AND d.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequn!=''">
+            AND d.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyequnList!=null">
+            AND d.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebu!=''">
+            AND d.shiyebu=#{shiyebu}
+        </if>
+        <if test="shiyebuList!=null">
+            AND d.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsi!=''">
+            AND d.shenggongsi=#{shenggongsi}
+        </if>
+        <if test="shenggongsiList!=null">
+            AND d.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dept!=''">
+            AND d.dept_name=#{dept}
+        </if>
+        <if test="deptList!=null">
+            AND d.dept_name in
+            <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGrade!=''">
+            AND d.type1=#{jobGrade}
+        </if>
+        <if test="jobGradeList!=null">
+            AND d.type1 in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(d.emp_name," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND d.employeeID=#{employeeID}
+        </if>
+    </select>
+
+    <select id="cglhzDetail" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.util.LinkedHashMap">
+        select substr(d.day,1,7) month, d.day, d.employeeID, d.empname, d.deptname, d.ts, d.content,
+        d.konggujituan, d.shiyequn, d.shiyebu, d.shenggongsi
+        from all_1521_dsj_cf_total d WHERE 1=1
+        <if test="beginDate!=''">
+            <![CDATA[AND substr(d. DAY, 1, 7)>=#{beginDate}]]>
+        </if>
+        <if test="endDate!=''">
+            <![CDATA[AND substr(d. DAY, 1, 7)<=#{endDate}]]>
+        </if>
+        <if test="jituan!=''">
+            AND d.konggujituan=#{jituan}
+        </if>
+        <if test="jituanList!=null">
+            AND d.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequn!=''">
+            AND d.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyequnList!=null">
+            AND d.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebu!=''">
+            AND d.shiyebu=#{shiyebu}
+        </if>
+        <if test="shiyebuList!=null">
+            AND d.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsi!=''">
+            AND d.shenggongsi=#{shenggongsi}
+        </if>
+        <if test="shenggongsiList!=null">
+            AND d.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dept!=''">
+            AND d.deptname=#{dept}
+        </if>
+        <if test="deptList!=null">
+            AND d.deptname in
+            <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGrade!=''">
+            AND d.type=#{jobGrade}
+        </if>
+        <if test="jobGradeList!=null">
+            AND d.type in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(d.empname," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND d.employeeID=#{employeeID}
+        </if>
+        ORDER BY d.day DESC
+        <if test="page!=null and pageSize!=null">
+            limit ${(page-1)*pageSize},#{pageSize}
+        </if>
+    </select>
+    <select id="countCglhzDetail" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.lang.Integer">
+        select COUNT(*) from all_1521_dsj_cf_total d WHERE 1=1
+        <if test="beginDate!=''">
+            <![CDATA[AND substr(d. DAY, 1, 7)>=#{beginDate}]]>
+        </if>
+        <if test="endDate!=''">
+            <![CDATA[AND substr(d. DAY, 1, 7)<=#{endDate}]]>
+        </if>
+        <if test="jituan!=''">
+            AND d.konggujituan=#{jituan}
+        </if>
+        <if test="jituanList!=null">
+            AND d.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequn!=''">
+            AND d.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyequnList!=null">
+            AND d.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebu!=''">
+            AND d.shiyebu=#{shiyebu}
+        </if>
+        <if test="shiyebuList!=null">
+            AND d.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsi!=''">
+            AND d.shenggongsi=#{shenggongsi}
+        </if>
+        <if test="shenggongsiList!=null">
+            AND d.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dept!=''">
+            AND d.deptname=#{dept}
+        </if>
+        <if test="deptList!=null">
+            AND d.deptname in
+            <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGrade!=''">
+            AND d.type=#{jobGrade}
+        </if>
+        <if test="jobGradeList!=null">
+            AND d.type in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(d.empname," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND d.employeeID=#{employeeID}
+        </if>
+    </select>
+
+    <select id="cglmxDetail" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.util.LinkedHashMap">
+        SELECT substr(d.day1, 1, 7) month, d.day1, d.employeeID, d.empname, d.deptname, d.content_new,
+        d.konggujituan, d.shiyequn, d.shiyebu, d.shenggongsi
+        FROM all_1521_dsj_cf_detail d WHERE 1=1
+        <if test="beginDate!=''">
+            <![CDATA[AND substr(d.day1, 1, 7)>=#{beginDate}]]>
+        </if>
+        <if test="endDate!=''">
+            <![CDATA[AND substr(d.day1, 1, 7)<=#{endDate}]]>
+        </if>
+        <if test="jituan!=''">
+            AND d.konggujituan=#{jituan}
+        </if>
+        <if test="jituanList!=null">
+            AND d.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequn!=''">
+            AND d.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyequnList!=null">
+            AND d.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebu!=''">
+            AND d.shiyebu=#{shiyebu}
+        </if>
+        <if test="shiyebuList!=null">
+            AND d.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsi!=''">
+            AND d.shenggongsi=#{shenggongsi}
+        </if>
+        <if test="shenggongsiList!=null">
+            AND d.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dept!=''">
+            AND d.deptname=#{dept}
+        </if>
+        <if test="deptList!=null">
+            AND d.deptname in
+            <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGrade!=''">
+            AND d.type=#{jobGrade}
+        </if>
+        <if test="jobGradeList!=null">
+            AND d.type in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(d.empname," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND d.employeeID=#{employeeID}
+        </if>
+        ORDER BY d.day1 DESC
+        <if test="page!=null and pageSize!=null">
+            limit ${(page-1)*pageSize},#{pageSize}
+        </if>
+    </select>
+    <select id="countCglmxDetail" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.lang.Integer">
+        select COUNT(*) FROM all_1521_dsj_cf_detail d WHERE 1=1
+        <if test="beginDate!=''">
+            <![CDATA[AND substr(d.day1, 1, 7)>=#{beginDate}]]>
+        </if>
+        <if test="endDate!=''">
+            <![CDATA[AND substr(d.day1, 1, 7)<=#{endDate}]]>
+        </if>
+        <if test="jituan!=''">
+            AND d.konggujituan=#{jituan}
+        </if>
+        <if test="jituanList!=null">
+            AND d.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequn!=''">
+            AND d.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyequnList!=null">
+            AND d.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebu!=''">
+            AND d.shiyebu=#{shiyebu}
+        </if>
+        <if test="shiyebuList!=null">
+            AND d.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsi!=''">
+            AND d.shenggongsi=#{shenggongsi}
+        </if>
+        <if test="shenggongsiList!=null">
+            AND d.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dept!=''">
+            AND d.deptname=#{dept}
+        </if>
+        <if test="deptList!=null">
+            AND d.deptname in
+            <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGrade!=''">
+            AND d.type=#{jobGrade}
+        </if>
+        <if test="jobGradeList!=null">
+            AND d.type in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(d.empname," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND d.employeeID=#{employeeID}
+        </if>
+    </select>
+
+    <select id="issueDetail" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.util.LinkedHashMap">
+        select d.month, d.day, d.employeeID, d.empname, d.deptname, d.sol_pro sol_pro,
+        d.konggujituan, d.shiyequn, d.shiyebu, d.shenggongsi
+        from all_1521_dsj_solve d where 1=1
+        <if test="beginDate!=''">
+            <![CDATA[AND d.month>=#{beginDate}]]>
+        </if>
+        <if test="endDate!=''">
+            <![CDATA[AND d.month<=#{endDate}]]>
+        </if>
+        <if test="jituan!=''">
+            AND d.konggujituan=#{jituan}
+        </if>
+        <if test="jituanList!=null">
+            AND d.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequn!=''">
+            AND d.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyequnList!=null">
+            AND d.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebu!=''">
+            AND d.shiyebu=#{shiyebu}
+        </if>
+        <if test="shiyebuList!=null">
+            AND d.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsi!=''">
+            AND d.shenggongsi=#{shenggongsi}
+        </if>
+        <if test="shenggongsiList!=null">
+            AND d.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dept!=''">
+            AND d.deptname=#{dept}
+        </if>
+        <if test="deptList!=null">
+            AND d.deptname in
+            <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGrade!=''">
+            AND d.type=#{jobGrade}
+        </if>
+        <if test="jobGradeList!=null">
+            AND d.type in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(d.empname," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND d.employeeID=#{employeeID}
+        </if>
+        ORDER BY d.day DESC
+        <if test="page!=null and pageSize!=null">
+            limit ${(page-1)*pageSize},#{pageSize}
+        </if>
+    </select>
+    <select id="countIssueDetail" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.lang.Integer">
+        select COUNT(*) from all_1521_dsj_solve d where 1=1
+        <if test="beginDate!=''">
+            <![CDATA[AND d.month>=#{beginDate}]]>
+        </if>
+        <if test="endDate!=''">
+            <![CDATA[AND d.month<=#{endDate}]]>
+        </if>
+        <if test="jituan!=''">
+            AND d.konggujituan=#{jituan}
+        </if>
+        <if test="jituanList!=null">
+            AND d.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequn!=''">
+            AND d.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyequnList!=null">
+            AND d.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebu!=''">
+            AND d.shiyebu=#{shiyebu}
+        </if>
+        <if test="shiyebuList!=null">
+            AND d.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsi!=''">
+            AND d.shenggongsi=#{shenggongsi}
+        </if>
+        <if test="shenggongsiList!=null">
+            AND d.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dept!=''">
+            AND d.deptname=#{dept}
+        </if>
+        <if test="deptList!=null">
+            AND d.deptname in
+            <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGrade!=''">
+            AND d.type=#{jobGrade}
+        </if>
+        <if test="jobGradeList!=null">
+            AND d.type in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(d.empname," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND d.employeeID=#{employeeID}
+        </if>
+    </select>
+
+    <select id="introspectionDetail" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.util.LinkedHashMap">
+        select d.month, d.day, d.employeeID, d.empname, d.deptname, d.introspect, d.konggujituan, d.shiyequn,
+        d.shiyebu, d.shenggongsi
+        from all_1521_dsj_introspect d where 1=1
+        <if test="beginDate!=''">
+            <![CDATA[AND d.month>=#{beginDate}]]>
+        </if>
+        <if test="endDate!=''">
+            <![CDATA[AND d.month<=#{endDate}]]>
+        </if>
+        <if test="jituan!=''">
+            AND d.konggujituan=#{jituan}
+        </if>
+        <if test="jituanList!=null">
+            AND d.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequn!=''">
+            AND d.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyequnList!=null">
+            AND d.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebu!=''">
+            AND d.shiyebu=#{shiyebu}
+        </if>
+        <if test="shiyebuList!=null">
+            AND d.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsi!=''">
+            AND d.shenggongsi=#{shenggongsi}
+        </if>
+        <if test="shenggongsiList!=null">
+            AND d.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dept!=''">
+            AND d.deptname=#{dept}
+        </if>
+        <if test="deptList!=null">
+            AND d.deptname in
+            <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGrade!=''">
+            AND d.type=#{jobGrade}
+        </if>
+        <if test="jobGradeList!=null">
+            AND d.type in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(d.empname," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND d.employeeID=#{employeeID}
+        </if>
+        ORDER BY d.day DESC
+        <if test="page!=null and pageSize!=null">
+            limit ${(page-1)*pageSize},#{pageSize}
+        </if>
+    </select>
+    <select id="countIntrospectionDetail" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.lang.Integer">
+        select COUNT(*) from all_1521_dsj_introspect d where 1=1
+        <if test="beginDate!=''">
+            <![CDATA[AND d.month>=#{beginDate}]]>
+        </if>
+        <if test="endDate!=''">
+            <![CDATA[AND d.month<=#{endDate}]]>
+        </if>
+        <if test="jituan!=''">
+            AND d.konggujituan=#{jituan}
+        </if>
+        <if test="jituanList!=null">
+            AND d.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequn!=''">
+            AND d.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyequnList!=null">
+            AND d.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebu!=''">
+            AND d.shiyebu=#{shiyebu}
+        </if>
+        <if test="shiyebuList!=null">
+            AND d.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsi!=''">
+            AND d.shenggongsi=#{shenggongsi}
+        </if>
+        <if test="shenggongsiList!=null">
+            AND d.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="dept!=''">
+            AND d.deptname=#{dept}
+        </if>
+        <if test="deptList!=null">
+            AND d.deptname in
+            <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGrade!=''">
+            AND d.type=#{jobGrade}
+        </if>
+        <if test="jobGradeList!=null">
+            AND d.type in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(d.empname," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND d.employeeID=#{employeeID}
+        </if>
+    </select>
+
+    <select id="allReport" parameterType="com.hanergy.reportForms.commons.CommonSearchParam" resultType="java.util.LinkedHashMap">
+        SELECT t.in_month , t.in_date ,DATE_FORMAT( t.inputtime, '%Y-%m-%d %H:%i:%S' ) AS inputtime,t.employeeid
+        employeeID, t.type ,t.empname ,t.dept_name,t.konggujituan ,
+        t.shiyequn ,t.1521_1 , t.1521_2 , t.1521_3 , t.1521_4 , t.1521_5 , t.1521_6 , t.1521_7 , t.1521_8 , t.1521_9 ,
+        t.1521_10,t.1521_11 ,t.1521_12 , t.1521_13 , 1521_14 , t.1521_15 , t.1521_16
+        FROM all_1521_quanbu_dtl t WHERE 1=1
+        <if test="deptList!=null">
+            AND t.dept_name in
+            <foreach
+                    collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGradeList!=null">
+            AND t.type in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jituanList!=null">
+            AND t.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequnList!=null">
+            AND t.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebuList!=null">
+            AND t.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsiList!=null">
+            AND t.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="beginDate!='' and endDate!=''">
+            <choose>
+                <when test="beginDate.toString()==endDate.toString()">
+                    AND t.in_month=#{beginDate,jdbcType=VARCHAR}
+                </when>
+                <otherwise>
+                    AND t.in_month BETWEEN #{beginDate,jdbcType=VARCHAR} AND #{endDate,jdbcType=VARCHAR}
+                </otherwise>
+            </choose>
+        </if>
+        <if test="beginDate!='' and endDate.toString()==''">
+            AND t.in_month>=#{beginDate,jdbcType=VARCHAR}
+        </if>
+        <if test="beginDate.toString()=='' and endDate!=''">
+            <![CDATA[AND t.in_month<=#{endDate,jdbcType=VARCHAR}]]>
+        </if>
+
+        <if test="jituan!=''">
+            AND t.konggujituan=#{jituan}
+        </if>
+        <if test="shiyequn!=''">
+            AND t.shiyequn=#{shiyequn}
+        </if>
+
+        <if test="shiyebu!=''">
+            AND t.shiyebu=#{shiyebu}
+        </if>
+
+        <if test="shenggongsi!=''">
+            AND t.shenggongsi=#{shenggongsi}
+        </if>
+
+        <if test="dept!=''">
+            AND t.dept_name=#{dept}
+        </if>
+
+        <if test="jobGrade!=''">
+            AND t.type=#{jobGrade}
+        </if>
+
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(t.empname," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND t.employeeid=#{employeeID}
+        </if>
+        <if test="page!=null and pageSize!=null">
+            limit ${(page-1)*pageSize},#{pageSize}
+        </if>
+    </select>
+    <select id="countAllReport" parameterType="com.hanergy.reportForms.commons.CommonSearchParam"
+            resultType="java.lang.Integer">
+        select COUNT(t.employeeid) FROM all_1521_quanbu_dtl t WHERE 1=1
+        <if test="deptList!=null">
+            AND t.dept_name in
+            <foreach
+                    collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jobGradeList!=null">
+            AND t.type in
+            <foreach collection="jobGradeList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="jituanList!=null">
+            AND t.konggujituan IN
+            <foreach collection="jituanList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyequnList!=null">
+            AND t.shiyequn IN
+            <foreach collection="shiyequnList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shiyebuList!=null">
+            AND t.shiyebu IN
+            <foreach collection="shiyebuList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="shenggongsiList!=null">
+            AND t.shenggongsi IN
+            <foreach collection="shenggongsiList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="beginDate!='' and endDate!=''">
+            <choose>
+                <when test="beginDate.toString()==endDate.toString()">
+                    AND t.in_month=#{beginDate,jdbcType=VARCHAR}
+                </when>
+                <otherwise>
+                    AND t.in_month BETWEEN #{beginDate,jdbcType=VARCHAR} AND #{endDate,jdbcType=VARCHAR}
+                </otherwise>
+            </choose>
+        </if>
+        <if test="beginDate!='' and endDate.toString()==''">
+            AND t.in_month>=#{beginDate,jdbcType=VARCHAR}
+        </if>
+        <if test="beginDate.toString()=='' and endDate!=''">
+            <![CDATA[AND t.in_month<=#{endDate,jdbcType=VARCHAR}]]>
+        </if>
+
+        <if test="jituan!=''">
+            AND t.konggujituan=#{jituan}
+        </if>
+        <if test="shiyequn!=''">
+            AND t.shiyequn=#{shiyequn}
+        </if>
+
+        <if test="shiyebu!=''">
+            AND t.shiyebu=#{shiyebu}
+        </if>
+
+        <if test="shenggongsi!=''">
+            AND t.shenggongsi=#{shenggongsi}
+        </if>
+
+        <if test="dept!=''">
+            AND t.dept_name=#{dept}
+        </if>
+
+        <if test="jobGrade!=''">
+            AND t.type=#{jobGrade}
+        </if>
+
+        <if test="employeeName!=''">
+            AND INSTR(TRIM(REPLACE(t.empname," ","")),#{employeeName})
+        </if>
+        <if test="employeeID!=''">
+            AND t.employeeid=#{employeeID}
+        </if>
+    </select>
+    <select id="getAllOrganization" parameterType="String" resultType="java.util.LinkedHashMap">
+        SELECT IFNULL(e.konggujituan, "") AS konggujituan , IFNULL(e.shiyequn, "") AS shiyequn , IFNULL(e.shiyebu, "")
+        AS shiyebu , IFNULL(e.shenggongsi, "") AS shenggongsi , IFNULL(e.dept_name, "") AS dept_name FROM emp_entry_all
+        e where 1=1
+        <if test="konggujituan!=''">
+            AND e.konggujituan=#{konggujituan}
+        </if>
+        <if test="shiyequn!=''">
+            AND e.shiyequn=#{shiyequn}
+        </if>
+        <if test="shiyebu!=''">
+            AND e.shiyebu=#{shiyebu}
+        </if>
+        <if test="shenggongsi!=''">
+            AND e.shenggongsi=#{shenggongsi}
+        </if>
+    </select>
+</mapper>
+

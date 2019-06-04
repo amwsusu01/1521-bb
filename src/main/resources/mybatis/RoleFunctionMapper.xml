@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hanergy.reportForms.mapper.RoleFunctionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hanergy.reportForms.mapper.entity.RoleFunction">
+        <id column="id" property="id" />
+        <result column="role" property="role" />
+        <result column="function" property="function" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, role, function
+    </sql>
+
+    <select id="querryRoleFunctionById" parameterType="java.lang.Long" resultType="java.lang.Long">
+      select function from role_function where role=#{id};
+    </select>
+</mapper>
