@@ -22,7 +22,7 @@
         <mybatis-plus-boot-starter.version>3.0.3</mybatis-plus-boot-starter.version>
         <dymatic-datasource>2.2.3</dymatic-datasource>
         <druid-spring-starter>1.1.10</druid-spring-starter>
-        <mysql-connect>5.1.47</mysql-connect>
+        <mysql-connect>8.0.16</mysql-connect>
         <commons-lang3>3.8</commons-lang3>
         <common-fileupload>1.3.3</common-fileupload>
         <guava.version>23.6.1-jre</guava.version>
